@@ -31,7 +31,7 @@
  * Basic settings can be found in Configuration.h
  *
  */
-#define CONFIGURATION_ADV_H_VERSION 020005
+#define CONFIGURATION_ADV_H_VERSION 020006
 
 // @section temperature
 
@@ -273,7 +273,14 @@
  */
 #define AUTOTEMP
 #if ENABLED(AUTOTEMP)
-  #define AUTOTEMP_OLDWEIGHT 0.98
+   #define AUTOTEMP_OLDWEIGHT    0.98
+  // Turn on AUTOTEMP on M104/M109 by default using proportions set here
+  //#define AUTOTEMP_PROPORTIONAL
+  #if ENABLED(AUTOTEMP_PROPORTIONAL)
+    #define AUTOTEMP_MIN_P      0 // (°C) Added to the target temperature
+    #define AUTOTEMP_MAX_P      5 // (°C) Added to the target temperature
+    #define AUTOTEMP_FACTOR_P   1 // Apply this F parameter by default (overridden by M104/M109 F)
+  #endif
 #endif
 
 // Extra options for the M114 "Current Position" report
@@ -589,19 +596,24 @@
 //#define EXT_SOLENOID
 
 // @section homing
+/**
+ * Homing Procedure
+ * Homing (G28) does an indefinite move towards the endstops to establish
+ * the position of the toolhead relative to the workspace.
+ */
 
-// Homing hits each endstop, retracts by these distances, then does a slower bump.
-#define HOMING_BUMP_MM {2, 2, 4}
-#define BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-//#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
-//#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
+//#define SENSORLESS_BACKOFF_MM  { 2, 2 }     // (mm) Backoff from endstops before sensorless homing
 
-// When G28 is called, this option will make Y home before X
-//#define HOME_Y_BEFORE_X
+#define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
+#define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
-// Enable this if X or Y can't home without homing the other axis first.
-//#define CODEPENDENT_XY_HOMING
+//#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
+//#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
+//#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
+//#define CODEPENDENT_XY_HOMING               // If X/Y can't home without homing Y/X first
+
+// @section bltouch
 #if ENABLED(BLTOUCH)
   /**
    * Either: Use the defaults (recommended) or: For special purposes, use the following DEFINES
@@ -1101,7 +1113,7 @@
    *  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
    *  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
    */
-  #define SDCARD_SORT_ALPHA
+  //#define SDCARD_SORT_ALPHA
 
   // SD Card Sorting options
   #if ENABLED(SDCARD_SORT_ALPHA)
@@ -1516,7 +1528,7 @@
 #define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
-  #define LIN_ADVANCE_K 0.0    // Unit: mm compression per 1mm/s extruder speed
+  #define LIN_ADVANCE_K 0.22    // Unit: mm compression per 1mm/s extruder speed
   //#define LA_DEBUG            // If enabled, this will generate debug information output over USB.
 #endif
 
@@ -1553,10 +1565,10 @@
  * the probe to be unable to reach any points.
  */
 #if PROBE_SELECTED && !IS_KINEMATIC
-  //#define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_RIGHT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_FRONT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_BACK MIN_PROBE_EDGE
+  //#define PROBING_MARGIN_LEFT PROBING_MARGIN
+  //#define PROBING_MARGIN_RIGHT PROBING_MARGIN
+  //#define PROBING_MARGIN_FRONT PROBING_MARGIN
+  //#define PROBING_MARGIN_BACK PROBING_MARGIN
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
