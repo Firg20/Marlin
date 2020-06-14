@@ -1778,7 +1778,7 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-//#define SPEAKER
+#define SPEAKER
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -1935,6 +1935,8 @@
 //
 // IMPORTANT: The U8glib library is required for Graphical Display!
 //            https://github.com/olikraus/U8glib_Arduino
+//
+// NOTE: If the LCD is unresponsive you may need to reverse the plugs.
 //
 
 //
